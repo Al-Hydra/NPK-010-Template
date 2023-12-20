@@ -1,0 +1,104 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+//spikeANM
+/*
+char Magic[4];
+
+BigEndian();
+uint Size;
+
+uint unk;
+
+uint unk;
+*/
+LittleEndian();
+uint ChunkType;
+float AnimationLength;
+uint boneInfoOffset;
+uint unk5[4];
+uint boneCount;
+uint unk6[4];
+
+local uint Pos;
+local string Values;
+
+struct{
+    uint boneNameOffset <hidden = true>;
+    Pos = FTell();
+    FSeek(boneNameOffset);
+    string BoneName;
+    FSeek(Pos);
+    
+    uint LocFramesCount;
+    uint RotFramesCount;
+    uint ScaleFramesCount;
+
+    //--------------------------------------
+    uint LocKeyframesOff <hidden = true>;
+    Pos = FTell();
+    FSeek(LocKeyframesOff);
+    float LocKeyframes[LocFramesCount];
+    FSeek(Pos);
+    
+    uint RotKeyframesOff <hidden = true>;
+    Pos = FTell();
+    FSeek(RotKeyframesOff);
+    float RotKeyframes[RotFramesCount];
+    FSeek(Pos);
+    
+    uint ScaleKeyframesOff <hidden = true>;
+    Pos = FTell();
+    FSeek(ScaleKeyframesOff);
+    float ScaleKeyframes[ScaleFramesCount];
+    FSeek(Pos);
+    //---------------------------------------
+    
+    
+    uint LocFramesOffset <hidden = true>;
+    Pos = FTell();
+    FSeek(LocFramesOffset);
+    struct{
+        float LocX;
+        float LocY;
+        float LocZ;
+        float LocW;
+        
+    }LocationFrames[LocFramesCount] <optimize= false, read= Str("%.2f, %.2f, %.2f",LocX,LocY,LocZ)>;
+    FSeek(Pos);
+    
+    uint RotFramesOffset <hidden = true>;
+    Pos = FTell();
+    FSeek(RotFramesOffset);
+    struct{
+        short RotX;
+        short RotY;
+        short RotZ;
+        short RotW;
+        
+    }RotationFrames[RotFramesCount] <optimize= false, read= Str("%.2f, %.2f, %.2f, %.2f",RotX,RotY,RotZ,RotW)>;
+    FSeek(Pos);
+    
+    uint ScaleFramesOffset <hidden = true>;
+    Pos = FTell();
+    FSeek(ScaleFramesOffset);
+    struct{
+        float ScaleX;
+        float ScaleY;
+        float ScaleZ;
+        float ScaleW;
+        
+    }ScaleFrames[ScaleFramesCount] <optimize= false, read= Str("%.2f, %.2f, %.2f",ScaleX,ScaleY,ScaleZ)>;
+    FSeek(Pos);
+
+}BoneHeaders[boneCount] <optimize= false, read = Str("%s (%d, %d, %d)",BoneName,LocFramesCount,RotFramesCount,ScaleFramesCount)>;
+

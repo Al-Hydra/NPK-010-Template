@@ -1,0 +1,103 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: 
+//   Authors: Hydra
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: *.npk
+//  ID Bytes: 6E 70 61 6B
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+local int i;
+local int remainder;
+
+struct{
+    char magic[4];
+    uint unk;
+    uint version;
+    uint headerSize;
+    uint nameOffset;
+    uint ChunksStartOffset;
+    uint npkCount;
+    uint ReferencesOffset1;
+    uint sssssss;
+    uint StringsCount;
+    uint ChunksInfoOffset2;
+    uint StaticUnk;
+    uint TotalStringCount;
+    uint unkOffset1;
+    uint unk;
+    uint ChunkList2Offset;
+    uint StringsSize;
+}Header;
+//align
+remainder = sizeof(Header) % 16;
+if (remainder != 0)
+{
+    FSkip(16 - remainder);
+}
+
+
+char fileName[16];
+
+struct{
+    char npkType[4];
+}npkTypes[Header.npkCount] <read = npkType>;
+
+
+struct{
+    string String;
+    remainder = sizeof(String) % 4;
+    if (remainder != 0)
+    {
+        FSkip(4 - remainder);
+    }
+}Strings[Header.StringsCount] <read = String, optimize = false>;
+
+FSeek(Header.nameOffset);
+
+struct{
+    string String;
+    remainder = sizeof(String) % 4;
+    if (remainder != 0)
+    {
+        FSkip(4 - remainder);
+    }
+}AllStrings[Header.TotalStringCount] <read = String, optimize = false>;
+/*
+struct{
+    int Index <read = Strings[this].String>;
+    local string ChunkName = Strings[Index].String;
+}ChunkList[Header.StringsCount] <read= Str("%s (%d)", ChunkName, Index), optimize = false>;
+*/
+uint References1[Header.StringsCount] <read = Strings[this].String>;
+uint References2[Header.StringsCount] <read = Strings[this].String>;
+
+struct{
+    int Index <read = AllStrings[this].String>;
+    if (Index > Header.npkCount)
+    {
+        uint ParentNPK;
+        uint Size;
+        uint Size2;
+        uint idk5;
+        Printf("%d\n", idk5);
+
+    }
+}chunkData[Header.TotalStringCount - 1] <optimize = false>;
+
+struct{
+uint unk;
+uint unk2;
+}unksec[Header.TotalStringCount];
+
+remainder = sizeof(unksec) % 4;
+if (remainder != 0)
+{
+    FSkip(4 - remainder);
+}

@@ -1,0 +1,40 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+uint type;
+ushort unk;
+ushort BoneCount;
+ushort unk2;
+ushort BoneNamesOffset;
+
+local uint Pos;
+
+struct{
+    uint BoneNameOffset;
+    
+    Pos = FTell();
+
+    FSeek(BoneNameOffset);
+    string BoneName;
+
+    FSeek(Pos);
+    
+    BigEndian();
+    short BoneIndex;
+    short ParentIndex;
+    LittleEndian();
+    
+    float LocalSpace[12];
+    float WorldSpace[12];
+    
+    float Pi[6];
+}Bones[BoneCount] <optimize= false, read = BoneName>;
